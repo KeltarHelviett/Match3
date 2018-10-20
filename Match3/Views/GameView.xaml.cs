@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using Match3.ViewModels;
 
 namespace Match3.Views
 {
@@ -7,6 +8,7 @@ namespace Match3.Views
         public GameView()
         {
             InitializeComponent();
+            DataContext = new GameViewModel();
         }
     }
 }

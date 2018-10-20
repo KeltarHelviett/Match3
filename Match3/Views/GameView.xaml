@@ -7,6 +7,12 @@
         mc:Ignorable="d"
         Title="Игровой экран" Height="450" Width="800">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="AntiqueWhite" >
+            <Label HorizontalAlignment="Center" VerticalAlignment="Center" Content="{Binding Path=TimeLeft}"/>
+        </StackPanel>
     </Grid>
 </Window>
