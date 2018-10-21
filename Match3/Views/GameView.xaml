@@ -9,10 +9,28 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="AntiqueWhite" >
             <Label HorizontalAlignment="Center" VerticalAlignment="Center" Content="{Binding Path=TimeLeft}"/>
         </StackPanel>
+        <Canvas x:Name="MainCanvas" Grid.Row="1" Background="Wheat" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Button Content="Button" x:Name="RotateBtn" RenderTransformOrigin="0.5, 0.5">
+                <Button.RenderTransform>
+                    <RotateTransform x:Name="noFreeze"></RotateTransform>
+                </Button.RenderTransform>
+                <Button.Triggers>
+                    <EventTrigger RoutedEvent="Button.Click">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation
+                                    Storyboard.TargetProperty="(Button.RenderTransform).(RotateTransform.Angle)"
+                                    To="-360" Duration="0:0:1" RepeatBehavior="Forever" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Button.Triggers>
+            </Button>
+        </Canvas>
     </Grid>
 </Window>

@@ -8,7 +8,14 @@ namespace Match3.Views
         public GameView()
         {
             InitializeComponent();
-            DataContext = new GameViewModel();
+            Loaded += delegate
+            {
+                MainCanvas.UpdateLayout();
+                MainCanvas.InvalidateArrange();
+                MainCanvas.InvalidateMeasure();
+                DataContext = new GameViewModel(MainCanvas);
+            };
+            
         }
     }
 }
