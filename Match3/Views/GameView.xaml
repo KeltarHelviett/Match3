@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Match3.Views"
         mc:Ignorable="d"
-        Title="Игровой экран" Height="450" Width="800">
+        Title="Игровой экран" Height="800" Width="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
@@ -13,6 +13,7 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="AntiqueWhite" >
             <Label HorizontalAlignment="Center" VerticalAlignment="Center" Content="{Binding Path=TimeLeft}"/>
+            <Label HorizontalAlignment="Left" VerticalAlignment="Center" Content="{Binding Path=Coords}"/>
         </StackPanel>
         <Canvas x:Name="MainCanvas" Grid.Row="1" Background="Wheat" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Button Content="Button" x:Name="RotateBtn" RenderTransformOrigin="0.5, 0.5">
@@ -31,6 +32,24 @@
                     </EventTrigger>
                 </Button.Triggers>
             </Button>
+            <Path Stroke="Black" StrokeThickness="1">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathGeometry.Figures>
+                            <PathFigureCollection>
+                                <PathFigure IsClosed="True" StartPoint="10,100">
+                                    <PathFigure.Segments>
+                                        <PathSegmentCollection>
+                                            <LineSegment Point="100,100" />
+                                            <LineSegment Point="100,50" />
+                                        </PathSegmentCollection>
+                                    </PathFigure.Segments>
+                                </PathFigure>
+                            </PathFigureCollection>
+                        </PathGeometry.Figures>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
         </Canvas>
     </Grid>
 </Window>

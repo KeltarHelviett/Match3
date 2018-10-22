@@ -1,26 +1,18 @@
-﻿namespace Match3.Models
+﻿using System.Windows.Controls;
+using System.Windows.Shapes;
+
+namespace Match3.Models
 {
     public enum TileType
     {
-        GreenRectangle, PurpleRectangle, BlueRectangle, BlueTriangle, PurpleTriangle,
+        Rectangle, Triangle
     }
 
-    public class Tile
+    public abstract class Tile: Shape
     {
         #region Ctor
 
-        public Tile() { }
-
-        public Tile(TileType type)
-        {
-            Type = type;
-        }
-
-        public Tile(TileType type, double left, double top): this(type)
-        {
-            Left = left;
-            Top = top;
-        }
+        protected Tile() { }
 
         #endregion
 
@@ -28,20 +20,18 @@
 
         public double Left { get; set; }
 
-        public TileType Type { get; set; }
+        public virtual TileType Type { get; }
 
         public double Top { get; set; }
-
-        public double Width { get; set; }
-
-        public double Height { get; set; }
 
         public int Row { get; set; }
 
         public int Col { get; set; }
 
+        public double TileWidth { get; set; }
+
+        public double TileHeight { get; set; }
+
         #endregion
-
-
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System.Windows;
+using System.Windows.Media;
+using Match3.Models;
 using Match3.ViewModels;
 
 namespace Match3.Views
@@ -10,12 +12,8 @@ namespace Match3.Views
             InitializeComponent();
             Loaded += delegate
             {
-                //MainCanvas.UpdateLayout();
-                //MainCanvas.InvalidateArrange();
-                //MainCanvas.InvalidateMeasure();
                 DataContext = new GameViewModel(MainCanvas);
             };
-            
         }
     }
 }

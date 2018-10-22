@@ -68,7 +68,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Models\RectangleTile.cs" />
     <Compile Include="Models\Tile.cs" />
+    <Compile Include="Models\TriangleTile.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ViewModels\GameViewModel.cs" />
     <Compile Include="Views\GameView.xaml.cs">
