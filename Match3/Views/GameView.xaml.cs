@@ -10,9 +10,9 @@ namespace Match3.Views
             InitializeComponent();
             Loaded += delegate
             {
-                MainCanvas.UpdateLayout();
-                MainCanvas.InvalidateArrange();
-                MainCanvas.InvalidateMeasure();
+                //MainCanvas.UpdateLayout();
+                //MainCanvas.InvalidateArrange();
+                //MainCanvas.InvalidateMeasure();
                 DataContext = new GameViewModel(MainCanvas);
             };
             

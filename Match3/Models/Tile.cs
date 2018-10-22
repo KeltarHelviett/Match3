@@ -2,7 +2,7 @@
 {
     public enum TileType
     {
-        Triangle, Rectangle,
+        GreenRectangle, PurpleRectangle, BlueRectangle, BlueTriangle, PurpleTriangle,
     }
 
     public class Tile

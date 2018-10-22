@@ -59,8 +59,11 @@ namespace Match3.ViewModels
 
         public Dictionary<TileType, BitmapImage> Images = new Dictionary<TileType, BitmapImage>
         {
-            { TileType.Triangle, new BitmapImage(new Uri($"pack://application:,,,/Images/{TileType.Triangle.ToString()}.png"))},
-            { TileType.Rectangle, new BitmapImage(new Uri($"pack://application:,,,/Images/{TileType.Rectangle.ToString()}.png"))},
+            { TileType.GreenRectangle, new BitmapImage(new Uri($"pack://application:,,,/Images/{TileType.GreenRectangle.ToString()}.png"))},
+            { TileType.BlueRectangle, new BitmapImage(new Uri($"pack://application:,,,/Images/{TileType.BlueRectangle.ToString()}.png"))},
+            { TileType.PurpleRectangle, new BitmapImage(new Uri($"pack://application:,,,/Images/{TileType.PurpleRectangle.ToString()}.png"))},
+            { TileType.BlueTriangle, new BitmapImage(new Uri($"pack://application:,,,/Images/{TileType.BlueTriangle.ToString()}.png"))},
+            { TileType.PurpleTriangle, new BitmapImage(new Uri($"pack://application:,,,/Images/{TileType.PurpleTriangle.ToString()}.png"))},
         };
 
         public ObservableCollection<Tile> Tiles { get; set; }
@@ -81,6 +84,8 @@ namespace Match3.ViewModels
 
         public Tile SelectedTile => SelectedButton.Tag as Tile;
 
+        public Tile SwapTile => SwapButton.Tag as Tile;
+
         public GameState State { get; set; } = GameState.SelectingTileToSwap;
 
         public Storyboard SelectedTileStoryBoard { get; set; } = new Storyboard() { FillBehavior = FillBehavior.Stop };
@@ -89,9 +94,66 @@ namespace Match3.ViewModels
 
         public Button SelectedButton { get; set; }
 
+        public Button SwapButton { get; set; }
+
         #endregion
 
         #region Private Methods
+
+        private void Init()
+        {
+            var tileTypes = Enum.GetValues(typeof(TileType));
+            Random random = new Random();
+            Tiles = new ObservableCollection<Tile>();
+            var tileHorSpace = Canvas.ActualWidth / 8;
+            var tileVerSpace = Canvas.ActualHeight / 8;
+            var tileWidth = tileHorSpace * 0.9;
+            var marginLeft = tileHorSpace * 0.05;
+            var tileHeight = tileVerSpace * 0.9;
+            var marginTop = tileVerSpace * 0.05;
+            for (var i = 0; i < 64; ++i)
+            {
+                var tile = new Tile()
+                {
+                    Row = i / 8,
+                    Col = i % 8,
+                    Type = (TileType)tileTypes.GetValue(random.Next(tileTypes.Length)),
+                    Left = (i % 8) * tileHorSpace + (marginLeft),
+                    Top = (i / 8) * tileVerSpace + (marginTop)
+                };
+                var btn = new Button()
+                {
+                    Width = tileWidth,
+                    Height = tileHeight,
+                    Content = new Image
+                    {
+                        Source = Images[tile.Type],
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Stretch = Stretch.Fill,
+                    },
+                    Tag = tile,
+                    RenderTransformOrigin = new Point(0.5, 0.5),
+                    RenderTransform = new RotateTransform(0),
+                    Background = Brushes.Transparent,
+                    BorderBrush = Brushes.Transparent
+                };
+                btn.Click += TileClick;
+                Canvas.SizeChanged += CanvasOnSizeChanged;
+                Canvas.Children.Add(btn);
+                Canvas.SetLeft(btn, tile.Left);
+                Canvas.SetTop(btn, tile.Top);
+                Tiles.Add(tile);
+            }
+        }
+
+        private void Swap(Button b1, Button b2)
+        {
+            
+            b1.BeginAnimation(Canvas.LeftProperty, new DoubleAnimation(Canvas.GetLeft(b2), new Duration(TimeSpan.FromSeconds(0.5))));
+            b1.BeginAnimation(Canvas.TopProperty, new DoubleAnimation(Canvas.GetTop(b2), new Duration(TimeSpan.FromSeconds(0.5))));
+            b2.BeginAnimation(Canvas.LeftProperty, new DoubleAnimation(Canvas.GetLeft(b1), new Duration(TimeSpan.FromSeconds(0.5))));
+            b2.BeginAnimation(Canvas.TopProperty, new DoubleAnimation(Canvas.GetTop(b1), new Duration(TimeSpan.FromSeconds(0.5))));
+        }
 
         private void TileClick(object sender, EventArgs args)
         {
@@ -111,23 +173,22 @@ namespace Match3.ViewModels
                 case GameState.SelectingTileToSwapWith:
                 {
                     if (tile.Row + 1 != SelectedTile.Row && tile.Row - 1 != SelectedTile.Row
-                                                         && tile.Col + 1 != SelectedTile.Col 
-                                                         && tile.Col - 1 != SelectedTile.Col)
+                        && tile.Col + 1 != SelectedTile.Col && tile.Col - 1 != SelectedTile.Col
+                        && tile != SelectedTile)
                     {
                         SelectedTileStoryBoard.Stop(SelectedButton);
                         State = GameState.SelectingTileToSwap;
                         TileClick(btn, args);
                         break;
                     }
+                    SwapButton = btn;
                     SelectedTileStoryBoard.Stop(SelectedButton);
-                    SelectedButton.BeginAnimation(Canvas.LeftProperty, new DoubleAnimation(tile.Left, new Duration(TimeSpan.FromSeconds(0.5))));
-                    SelectedButton.BeginAnimation(Canvas.TopProperty, new DoubleAnimation(tile.Top, new Duration(TimeSpan.FromSeconds(0.5))));
-                    btn.BeginAnimation(Canvas.LeftProperty, new DoubleAnimation(SelectedTile.Left, new Duration(TimeSpan.FromSeconds(0.5))));
-                    btn.BeginAnimation(Canvas.TopProperty, new DoubleAnimation(SelectedTile.Top, new Duration(TimeSpan.FromSeconds(0.5))));
-                    State = GameState.SelectingTileToSwap;
+                    Swap(SelectedButton, SwapButton);
+                    State = GameState.ComputingResult;
                     break;
                 }
                 case GameState.ComputingResult:
+                    Swap(SwapButton, SelectedButton);
                     break;
             }
             
@@ -157,50 +218,6 @@ namespace Match3.ViewModels
                         Canvas.SetTop(button, tile.Top);
                     }
                 }
-            }
-        }
-
-        #endregion
-
-        #region Public Methods
-
-        public void Init()
-        {
-            Tiles = new ObservableCollection<Tile>();
-            var tileHorSpace = Canvas.ActualWidth / 8;
-            var tileVerSpace = Canvas.ActualHeight / 8;
-            var tileWidth = tileHorSpace * 0.8;
-            var marginLeft = tileHorSpace * 0.1;
-            var tileHeight = tileVerSpace * 0.8;
-            var marginTop = tileVerSpace * 0.1;
-            for (var i = 0; i < 64; ++i)
-            {
-                var tile = new Tile()
-                {
-                    Row = i / 8, Col = i % 8,
-                    Type = TileType.Triangle,
-                    Left = (i % 8) * tileHorSpace + (marginLeft),
-                    Top = (i / 8) * tileVerSpace + (marginTop)
-                };
-                var btn = new Button()
-                {
-                    Width = tileWidth,
-                    Height = tileHeight,
-                    Content = new Image
-                    {
-                        Source = Images[tile.Type], VerticalAlignment = VerticalAlignment.Center,
-                        Stretch = Stretch.Fill,
-                    },
-                    Tag = tile,
-                    RenderTransformOrigin = new Point(0.5, 0.5),
-                    RenderTransform = new RotateTransform(0),
-                };
-                btn.Click += TileClick;
-                Canvas.SizeChanged += CanvasOnSizeChanged;
-                Canvas.Children.Add(btn);
-                Canvas.SetLeft(btn, tile.Left);
-                Canvas.SetTop(btn, tile.Top);
-                Tiles.Add(tile);
             }
         }
 
