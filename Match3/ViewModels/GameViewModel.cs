@@ -159,11 +159,8 @@ namespace Match3.ViewModels
 
         private void Swap(Tile t1, Tile t2)
         {
-            
-            t1.BeginAnimation(Canvas.LeftProperty, new DoubleAnimation(t2.Left, new Duration(TimeSpan.FromSeconds(0.5))));
-            t1.BeginAnimation(Canvas.TopProperty, new DoubleAnimation(t2.Top, new Duration(TimeSpan.FromSeconds(0.5))));
-            t2.BeginAnimation(Canvas.LeftProperty, new DoubleAnimation(t1.Left, new Duration(TimeSpan.FromSeconds(0.5))));
-            t2.BeginAnimation(Canvas.TopProperty, new DoubleAnimation(t1.Top, new Duration(TimeSpan.FromSeconds(0.5))));
+            t2.Move(t1.Left, t1.Top);
+            t1.Move(t2.Left, t2.Top);
             Tiles[t1.Row, t1.Col] = t2;
             Tiles[t2.Row, t2.Col] = t1;
             int t2Row = t2.Row, t2Col = t2.Col;
@@ -178,11 +175,10 @@ namespace Match3.ViewModels
         {
             tile.Row = row;
             tile.Col = col;
+            Tiles[row, col] = tile;
+            tile.Move(left, top);
             tile.Left = left;
             tile.Top = top;
-            Tiles[row, col] = tile;
-            tile.BeginAnimation(Canvas.LeftProperty, new DoubleAnimation(left, new Duration(TimeSpan.FromSeconds(1))));
-            tile.BeginAnimation(Canvas.TopProperty, new DoubleAnimation(top, new Duration(TimeSpan.FromSeconds(1))));
         }
 
         private void TileClick(object sender, EventArgs args)
