@@ -32,18 +32,10 @@ namespace Match3.ViewModels
                 (sender, args) => OnPropertyChanged(nameof(TimeLeft)),
                 Dispatcher.CurrentDispatcher
             );
-            SpinAnimation.Completed += SpinAnimationOnCompleted;
-            SelectedTileStoryBoard.Children.Add(SpinAnimation);
             Timer.Tick += (sender, args) => TimeLeft -= 1;
             Init();
             Timer.Start();
             Compute();
-        }
-
-        private void SpinAnimationOnCompleted(object sender, EventArgs e)
-        {
-            if (State == GameState.SelectingTileToSwapWith)
-                SelectedTileStoryBoard.Begin(SelectedTile, true);
         }
 
         #endregion
@@ -122,10 +114,6 @@ namespace Match3.ViewModels
         public Tile SwapTile { get; set; }
 
         public GameState State { get; set; } = GameState.ComputingResult;
-
-        public Storyboard SelectedTileStoryBoard { get; set; } = new Storyboard() { FillBehavior = FillBehavior.Stop };
-        public DoubleAnimation SpinAnimation { get; set; } = 
-            new DoubleAnimation(-360, new Duration(new TimeSpan(0, 0, 2))) { FillBehavior = FillBehavior.Stop };
 
         #endregion
 
