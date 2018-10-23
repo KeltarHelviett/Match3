@@ -16,41 +16,6 @@
             <Label HorizontalAlignment="Center" VerticalAlignment="Bottom" Content="{Binding Path=Score}" ContentStringFormat="Score: {0}"/>
             <Label HorizontalAlignment="Left" VerticalAlignment="Center" Content="{Binding Path=Coords}"/>
         </StackPanel>
-        <Canvas x:Name="MainCanvas" Grid.Row="1" Background="Wheat" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <Button Content="Button" x:Name="RotateBtn" RenderTransformOrigin="0.5, 0.5">
-                <Button.RenderTransform>
-                    <RotateTransform x:Name="noFreeze"></RotateTransform>
-                </Button.RenderTransform>
-                <Button.Triggers>
-                    <EventTrigger RoutedEvent="Button.Click">
-                        <BeginStoryboard>
-                            <Storyboard>
-                                <DoubleAnimation
-                                    Storyboard.TargetProperty="(Button.RenderTransform).(RotateTransform.Angle)"
-                                    To="-360" Duration="0:0:1" RepeatBehavior="Forever" />
-                            </Storyboard>
-                        </BeginStoryboard>
-                    </EventTrigger>
-                </Button.Triggers>
-            </Button>
-            <Path Stroke="Black" StrokeThickness="1">
-                <Path.Data>
-                    <PathGeometry>
-                        <PathGeometry.Figures>
-                            <PathFigureCollection>
-                                <PathFigure IsClosed="True" StartPoint="10,100">
-                                    <PathFigure.Segments>
-                                        <PathSegmentCollection>
-                                            <LineSegment Point="100,100" />
-                                            <LineSegment Point="100,50" />
-                                        </PathSegmentCollection>
-                                    </PathFigure.Segments>
-                                </PathFigure>
-                            </PathFigureCollection>
-                        </PathGeometry.Figures>
-                    </PathGeometry>
-                </Path.Data>
-            </Path>
-        </Canvas>
+        <Canvas x:Name="MainCanvas" Grid.Row="1" Background="Wheat" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
     </Grid>
 </Window>
