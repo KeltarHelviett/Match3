@@ -13,6 +13,7 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="AntiqueWhite" >
             <Label HorizontalAlignment="Center" VerticalAlignment="Center" Content="{Binding Path=TimeLeft}"/>
+            <Label HorizontalAlignment="Center" VerticalAlignment="Bottom" Content="{Binding Path=Score}" ContentStringFormat="Score: {0}"/>
             <Label HorizontalAlignment="Left" VerticalAlignment="Center" Content="{Binding Path=Coords}"/>
         </StackPanel>
         <Canvas x:Name="MainCanvas" Grid.Row="1" Background="Wheat" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">

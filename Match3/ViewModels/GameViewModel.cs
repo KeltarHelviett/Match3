@@ -72,6 +72,8 @@ namespace Match3.ViewModels
 
         private readonly Random _random = new Random();
 
+        private int _score = 0;
+
         #endregion
 
         #region Public Properties
@@ -102,6 +104,18 @@ namespace Match3.ViewModels
         }
 
         public DispatcherTimer Timer { get; }
+
+        public int Score
+        {
+            get => _score;
+            set
+            {
+                if (_score == value)
+                    return;
+                _score = value;
+                OnPropertyChanged(nameof(Score));
+            }
+        }
 
         public Tile SelectedTile { get; set; }
 
@@ -304,7 +318,11 @@ namespace Match3.ViewModels
             {
                 if (tiles.Count >= 3)
                 {
-                    tiles.ForEach(t => t.ToDelete = true);
+                    tiles.ForEach(t =>
+                    {
+                        if (!t.ToDelete) Score++;
+                        t.ToDelete = true;
+                    });
                     result = true;
                 }
                 tiles.Clear();
