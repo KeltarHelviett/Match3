@@ -18,8 +18,8 @@ namespace Match3.Models
         {
             get
             {
-                var p1 = new Point(0, TileHeight);
-                var p2 = new Point(p1.X + TileWidth, p1.Y);
+                var p1 = new Point(0, Height);
+                var p2 = new Point(p1.X + Width, p1.Y);
                 var p3 = new Point((p1.X + p2.X) / 2, 0);
 
                 var segments = new List<PathSegment>

@@ -136,8 +136,8 @@ namespace Match3.ViewModels
             tile.Top = tile.Row * tileVerSpace + marginTop;
             tile.Stroke = Brushes.Black;
             tile.StrokeThickness = 1;
-            tile.TileHeight = tileHeight;
-            tile.TileWidth = tileWidth;
+            tile.Width = tileWidth;
+            tile.Height = tileHeight;
             tile.Fill = pt.Item2;
             Canvas.SetLeft(tile, tile.Left);
             Canvas.SetTop(tile, tile.Top);
@@ -228,8 +228,6 @@ namespace Match3.ViewModels
                 {
                     tile.Left = tile.Col * tileHorSpace + marginLeft;
                     tile.Top = tile.Row * tileVerSpace + marginTop;
-                    tile.TileWidth = tileWidth;
-                    tile.TileHeight = tileHeight;
                     tile.Width = tileWidth;
                     tile.Height = tileHeight;
                     Canvas.SetLeft(tile, tile.Left);

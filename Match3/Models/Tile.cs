@@ -31,10 +31,6 @@ namespace Match3.Models
 
         public int Col { get; set; }
 
-        public double TileWidth { get; set; }
-
-        public double TileHeight { get; set; }
-
         public bool ToDelete { get; set; } = false;
 
         #endregion

@@ -14,7 +14,7 @@ namespace Match3.Models
         #region Protected Members
 
         protected override Geometry DefiningGeometry => 
-            new RectangleGeometry(new Rect(new Point(0, 0), new Point(TileWidth, TileHeight)));
+            new RectangleGeometry(new Rect(new Point(0, 0), new Point(Width, Height)));
 
         #endregion
     }
