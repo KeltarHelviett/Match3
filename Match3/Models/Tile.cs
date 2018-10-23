@@ -32,6 +32,8 @@ namespace Match3.Models
 
         public double TileHeight { get; set; }
 
+        public bool ToDelete { get; set; } = false;
+
         #endregion
     }
 }
