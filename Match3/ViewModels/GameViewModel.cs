@@ -154,6 +154,12 @@ namespace Match3.ViewModels
             tile.Fill = pt.Item2;
             tile.MoveStarted += (sender, args) => AnimationCount += 1;
             tile.Moved += (sender, args) => AnimationCount -= 1;
+            tile.FadeStarted += (sender, args) => AnimationCount += 1;
+            tile.Faded += (sender, args) =>
+            {
+                AnimationCount -= 1;
+                Canvas.Children.Remove(tile);
+            };
             Canvas.SetLeft(tile, tile.Left);
             Canvas.SetTop(tile, tile.Top);
             tile.MouseLeftButtonUp += TileClick;
@@ -215,8 +221,6 @@ namespace Match3.ViewModels
                     {
                         SwapTile = tile;
                         Swap(SelectedTile, SwapTile);
-                        //State = GameState.ComputingResult;
-                        //Compute();
                         break;
                     }
                     State = GameState.SelectingTileToSwap;
@@ -272,7 +276,8 @@ namespace Match3.ViewModels
                     if (tile.ToDelete)
                     {
                         emptySpace.Enqueue(new Tuple<int, int, double, double>(tile.Row, tile.Col, tile.Left, tile.Top));
-                        Canvas.Children.Remove(tile);
+                        //Canvas.Children.Remove(tile);
+                        tile.Fade();
                     }
                     else
                     {

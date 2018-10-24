@@ -57,9 +57,25 @@ namespace Match3.Models
                 MoveAnimation(top, Canvas.TopProperty, Canvas.SetTop);
         }
 
+        public void Fade()
+        {
+            FadeStarted?.Invoke(this, EventArgs.Empty);
+            var anim = new DoubleAnimation(0, new Duration(TimeSpan.FromSeconds(0.2))) { FillBehavior = FillBehavior.Stop };
+            anim.Completed += (sender, args) =>
+            {
+                Opacity = 0;
+                Faded?.Invoke(this, args);
+            };
+            BeginAnimation(Tile.OpacityProperty, anim);
+        }
+
         #endregion
 
         #region Event
+
+        public event EventHandler FadeStarted;
+
+        public event EventHandler Faded;
 
         public event EventHandler MoveStarted;
 
