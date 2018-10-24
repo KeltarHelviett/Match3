@@ -41,6 +41,7 @@ namespace Match3.Models
         {
             void MoveAnimation(double value, DependencyProperty property, Action<UIElement, double> setter)
             {
+                MoveStarted?.Invoke(this, EventArgs.Empty);
                 var anim = new DoubleAnimation(value, new Duration(TimeSpan.FromSeconds(0.5))) { FillBehavior = FillBehavior.Stop };
                 anim.Completed += (sender, args) =>
                 {
@@ -59,6 +60,8 @@ namespace Match3.Models
         #endregion
 
         #region Event
+
+        public event EventHandler MoveStarted;
 
         public event EventHandler Moved;
 

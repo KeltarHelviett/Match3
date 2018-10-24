@@ -66,9 +66,22 @@ namespace Match3.ViewModels
 
         private int _score = 0;
 
+        private int _animationCount = 0;
+
         #endregion
 
         #region Public Properties
+
+        public int AnimationCount
+        {
+            get => _animationCount;
+            set
+            {
+                _animationCount = value;
+                if (_animationCount == 0)
+                    OnAnimationsCompleted();
+            }
+        }
 
         public Canvas Canvas { get; }
 
@@ -139,6 +152,8 @@ namespace Match3.ViewModels
             tile.Width = tileWidth;
             tile.Height = tileHeight;
             tile.Fill = pt.Item2;
+            tile.MoveStarted += (sender, args) => AnimationCount += 1;
+            tile.Moved += (sender, args) => AnimationCount -= 1;
             Canvas.SetLeft(tile, tile.Left);
             Canvas.SetTop(tile, tile.Top);
             tile.MouseLeftButtonUp += TileClick;
@@ -200,8 +215,8 @@ namespace Match3.ViewModels
                     {
                         SwapTile = tile;
                         Swap(SelectedTile, SwapTile);
-                        State = GameState.ComputingResult;
-                        Compute();
+                        //State = GameState.ComputingResult;
+                        //Compute();
                         break;
                     }
                     State = GameState.SelectingTileToSwap;
@@ -239,6 +254,13 @@ namespace Match3.ViewModels
             Canvas.InvalidateVisual();
         }
 
+        private void OnAnimationsCompleted()
+        {
+            Compute();
+            //Check();
+            //Fill();
+        }
+
         private void Fill()
         {
             var emptySpace = new Queue<Tuple<int, int, double, double>>(); // Row, Col, Left, Top
@@ -274,11 +296,15 @@ namespace Match3.ViewModels
         {
             if (!Check())
             {
-                Swap(SwapTile, SelectedTile);
+                if (SelectedTile != null && SwapTile != null)
+                    Swap(SwapTile, SelectedTile);
+                SelectedTile = null;
+                SwapTile = null;
                 State = GameState.SelectingTileToSwap;
                 return;
             }
-
+            SelectedTile = null;
+            SwapTile = null;
             do
             {
                 Fill();
