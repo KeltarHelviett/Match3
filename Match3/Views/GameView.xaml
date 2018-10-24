@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Match3.Views"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         mc:Ignorable="d"
         Title="Игровой экран" Height="800" Width="800">
     <Grid>
@@ -12,8 +13,15 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="AntiqueWhite" >
-            <Label HorizontalAlignment="Center" VerticalAlignment="Center" Content="{Binding Path=TimeLeft}"/>
-            <Label HorizontalAlignment="Center" VerticalAlignment="Bottom" Content="{Binding Path=Score}" ContentStringFormat="Score: {0}"/>
+            <Label HorizontalAlignment="Center" VerticalAlignment="Center" Content="{Binding Path=TimeLeft, NotifyOnTargetUpdated=True}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="TargetUpdated">
+                        <i:InvokeCommandAction Command="{Binding CloseWindow}" 
+                                               CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Label>
+            <Label x:Name="ScoreLabel" HorizontalAlignment="Center" VerticalAlignment="Bottom" Content="{Binding Path=Score}" ContentStringFormat="Score: {0}"/>
             <Label HorizontalAlignment="Left" VerticalAlignment="Center" Content="{Binding Path=Coords}"/>
         </StackPanel>
         <Canvas x:Name="MainCanvas" Grid.Row="1" Background="Wheat" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ClipToBounds="True"/>

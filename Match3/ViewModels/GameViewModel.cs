@@ -4,11 +4,13 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using Match3.Annotations;
 using Match3.Models;
+using Match3.Utilities;
 
 namespace Match3.ViewModels
 {
@@ -25,6 +27,16 @@ namespace Match3.ViewModels
         {
             Canvas = canvas;
             Canvas.MouseMove += (sender, args) => Coords = $"{args.GetPosition(Canvas).X}  {args.GetPosition(Canvas).Y}";
+            CloseWindow = new RelayCommand((sender) =>
+            {
+                if (TimeLeft == 0)
+                {
+                    MessageBox.Show($"Your score is {Score}", "Game over", MessageBoxButton.OK,
+                        MessageBoxImage.Information,
+                        MessageBoxResult.OK);
+                    (sender as Window).Close();
+                }
+            });
             Timer = new DispatcherTimer
             (
                 new TimeSpan(0, 0, 1), 
@@ -85,6 +97,8 @@ namespace Match3.ViewModels
 
         public Canvas Canvas { get; }
 
+        public ICommand CloseWindow { get; set; }
+
         public Tile[,] Tiles { get; set; }
 
         public List<Tuple<Type, SolidColorBrush>> PossibleTiles { get; } = new List<Tuple<Type, SolidColorBrush>>
@@ -104,6 +118,8 @@ namespace Match3.ViewModels
                 if (_timeLeft == value)
                     return;
                 _timeLeft = value;
+                if (value == 0)
+                    Timer.Stop();
                 OnPropertyChanged(nameof(TimeLeft));
             }
         }
