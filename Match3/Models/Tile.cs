@@ -59,6 +59,7 @@ namespace Match3.Models
 
         public void Fade()
         {
+            BeginAnimation(Tile.OpacityProperty, null);
             FadeStarted?.Invoke(this, EventArgs.Empty);
             var anim = new DoubleAnimation(0, new Duration(TimeSpan.FromSeconds(0.2))) { FillBehavior = FillBehavior.Stop };
             anim.Completed += (sender, args) =>
@@ -80,6 +81,10 @@ namespace Match3.Models
         public event EventHandler MoveStarted;
 
         public event EventHandler Moved;
+
+        public event EventHandler ShowStarted;
+
+        public event EventHandler Showed;
 
         #endregion
     }

@@ -42,7 +42,7 @@ namespace Match3.ViewModels
 
         #region Debug
 
-        public string _coords = "";
+        private string _coords = string.Empty;
 
         public string Coords
         {
@@ -310,10 +310,7 @@ namespace Match3.ViewModels
             }
             SelectedTile = null;
             SwapTile = null;
-            do
-            {
-                Fill();
-            } while (Check());
+            Fill();
             State = GameState.SelectingTileToSwap;
         }
 
