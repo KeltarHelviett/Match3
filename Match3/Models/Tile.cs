@@ -50,10 +50,10 @@ namespace Match3.Models
                 };
                 BeginAnimation(property, anim);
             }
-            if (Math.Abs(Left - left) > double.Epsilon)
+            if (Math.Abs(Canvas.GetLeft(this) - left) > double.Epsilon)
                 MoveAnimation(left, Canvas.LeftProperty, Canvas.SetLeft);
 
-            if (Math.Abs(Top - top) > double.Epsilon)
+            if (Math.Abs(Canvas.GetTop(this) - top) > double.Epsilon)
                 MoveAnimation(top, Canvas.TopProperty, Canvas.SetTop);
         }
 
