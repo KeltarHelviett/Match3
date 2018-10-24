@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 
@@ -15,17 +16,17 @@ namespace Match3.Models
     {
         #region Ctor
 
-        protected Tile() { }
+        protected Tile()
+        {
+            Stroke = Brushes.Black;
+            StrokeThickness = 1;
+        }
 
         #endregion
 
         #region Public Properties
 
-        public double Left { get; set; }
-
         public virtual TileType Type { get; }
-
-        public double Top { get; set; }
 
         public int Row { get; set; }
 
@@ -59,7 +60,7 @@ namespace Match3.Models
 
         public void Fade()
         {
-            BeginAnimation(Tile.OpacityProperty, null);
+            BeginAnimation(OpacityProperty, null);
             FadeStarted?.Invoke(this, EventArgs.Empty);
             var anim = new DoubleAnimation(0, new Duration(TimeSpan.FromSeconds(0.2))) { FillBehavior = FillBehavior.Stop };
             anim.Completed += (sender, args) =>
@@ -67,7 +68,7 @@ namespace Match3.Models
                 Opacity = 0;
                 Faded?.Invoke(this, args);
             };
-            BeginAnimation(Tile.OpacityProperty, anim);
+            BeginAnimation(OpacityProperty, anim);
         }
 
         #endregion
@@ -81,10 +82,6 @@ namespace Match3.Models
         public event EventHandler MoveStarted;
 
         public event EventHandler Moved;
-
-        public event EventHandler ShowStarted;
-
-        public event EventHandler Showed;
 
         #endregion
     }

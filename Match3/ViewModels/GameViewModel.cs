@@ -134,23 +134,12 @@ namespace Match3.ViewModels
 
         private Tile CreateTile(int row, int col)
         {
-            var tileHorSpace = Canvas.ActualWidth / 8;
-            var tileVerSpace = Canvas.ActualHeight / 8;
-            var tileWidth = tileHorSpace * 0.9;
-            var marginLeft = tileHorSpace * 0.05;
-            var tileHeight = tileVerSpace * 0.9;
-            var marginTop = tileVerSpace * 0.05;
             var pt = PossibleTiles[_random.Next(PossibleTiles.Count)];
-
             var tile = (Tile)Activator.CreateInstance(pt.Item1);
             tile.Row = row;
             tile.Col = col;
-            tile.Left = tile.Col * tileHorSpace + marginLeft;
-            tile.Top = tile.Row * tileVerSpace + marginTop;
-            tile.Stroke = Brushes.Black;
-            tile.StrokeThickness = 1;
-            tile.Width = tileWidth;
-            tile.Height = tileHeight;
+            tile.Width = Canvas.ActualWidth / 8 * 0.9;
+            tile.Height = Canvas.ActualHeight / 8 * 0.9;
             tile.Fill = pt.Item2;
             tile.MoveStarted += (sender, args) => AnimationCount += 1;
             tile.Moved += (sender, args) => AnimationCount -= 1;
@@ -160,12 +149,12 @@ namespace Match3.ViewModels
                 AnimationCount -= 1;
                 Canvas.Children.Remove(tile);
             };
-            Canvas.SetLeft(tile, tile.Left);
-            Canvas.SetTop(tile, -(8 - tile.Row) * tileVerSpace - marginTop);
+            Canvas.SetLeft(tile, GetLeft(tile));
+            Canvas.SetTop(tile, -(8 - tile.Row) * (Canvas.ActualHeight / 8) - Canvas.ActualHeight / 8 * 0.05);
             tile.MouseLeftButtonUp += TileClick;
             Canvas.Children.Add(tile);
             Tiles[tile.Row, tile.Col] = tile;
-            tile.Move(tile.Col * tileHorSpace + marginLeft, tile.Row * tileVerSpace + marginTop);
+            tile.Move(GetLeft(tile), GetTop(tile));
             return tile;
         }
 
@@ -173,24 +162,22 @@ namespace Match3.ViewModels
         {
             Tiles = new Tile[8, 8];
             for (var i = 0; i < 64; ++i)
-            {
-                var tile = CreateTile(i / 8, i % 8);
-            }
+                CreateTile(i / 8, i % 8);
             Canvas.SizeChanged += CanvasOnSizeChanged;
         }
 
         private void Swap(Tile t1, Tile t2)
         {
-            t2.Move(t1.Left, t1.Top);
-            t1.Move(t2.Left, t2.Top);
+            t2.Move(GetLeft(t1), GetTop(t1));
+            t1.Move(GetLeft(t2), GetTop(t2));
             Tiles[t1.Row, t1.Col] = t2;
             Tiles[t2.Row, t2.Col] = t1;
-            int t2Row = t2.Row, t2Col = t2.Col;
-            double t2Left = t2.Left, t2Top = t2.Top;
-            t2.Row = t1.Row; t2.Col = t1.Col;
-            t1.Row = t2Row; t1.Col = t2Col;
-            t2.Left = t1.Left; t2.Top = t1.Top;
-            t1.Left = t2Left; t1.Top = t2Top;
+            var t2Row = t2.Row;
+            var t2Col = t2.Col;
+            t2.Row = t1.Row;
+            t2.Col = t1.Col;
+            t1.Row = t2Row;
+            t1.Col = t2Col;
         }
 
         private void Move(Tile tile, int row, int col, double left, double top)
@@ -199,8 +186,6 @@ namespace Match3.ViewModels
             tile.Col = col;
             Tiles[row, col] = tile;
             tile.Move(left, top);
-            tile.Left = left;
-            tile.Top = top;
         }
 
         private void TileClick(object sender, EventArgs args)
@@ -210,13 +195,10 @@ namespace Match3.ViewModels
             switch (State)
             {
                 case GameState.SelectingTileToSwap:
-                {
                     SelectedTile = tile;
                     State = GameState.SelectingTileToSwapWith;
                     break;
-                }
                 case GameState.SelectingTileToSwapWith:
-                {
                     if (CanSwap(SelectedTile.Row, tile.Row, SelectedTile.Col, tile.Col)
                         || CanSwap(SelectedTile.Col, tile.Col, SelectedTile.Row, tile.Row))
                     {
@@ -227,31 +209,20 @@ namespace Match3.ViewModels
                     State = GameState.SelectingTileToSwap;
                     TileClick(tile, args);
                     break;
-                }
-                case GameState.ComputingResult:
-                    break;
             }
             
         }
 
         private void CanvasOnSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            var tileHorSpace = Canvas.ActualWidth / 8;
-            var tileVerSpace = Canvas.ActualHeight / 8;
-            var tileWidth = tileHorSpace * 0.9;
-            var marginLeft = tileHorSpace * 0.05;
-            var tileHeight = tileVerSpace * 0.9;
-            var marginTop = tileVerSpace * 0.05;
             foreach (var uiElem in (sender as Canvas).Children)
             {
                 if (uiElem is Tile tile)
                 {
-                    tile.Left = tile.Col * tileHorSpace + marginLeft;
-                    tile.Top = tile.Row * tileVerSpace + marginTop;
-                    tile.Width = tileWidth;
-                    tile.Height = tileHeight;
-                    Canvas.SetLeft(tile, tile.Left);
-                    Canvas.SetTop(tile, tile.Top);
+                    tile.Width = Canvas.ActualWidth / 8 * 0.9;
+                    tile.Height = Canvas.ActualHeight / 8 * 0.9;
+                    Canvas.SetLeft(tile, GetLeft(tile));
+                    Canvas.SetTop(tile, GetTop(tile));
                 }
             }
             Canvas.InvalidateMeasure();
@@ -274,7 +245,7 @@ namespace Match3.ViewModels
                     var tile = Tiles[j, i];
                     if (tile.ToDelete)
                     {
-                        emptySpace.Enqueue(new Tuple<int, int, double, double>(tile.Row, tile.Col, tile.Left, tile.Top));
+                        emptySpace.Enqueue(new Tuple<int, int, double, double>(tile.Row, tile.Col, GetLeft(tile), GetTop(tile)));
                         tile.Fade();
                     }
                     else
@@ -282,21 +253,30 @@ namespace Match3.ViewModels
                         if (emptySpace.Count != 0)
                         {
                             var es = emptySpace.Dequeue();
-                            emptySpace.Enqueue(new Tuple<int, int, double, double>(tile.Row, tile.Col, tile.Left, tile.Top));
+                            emptySpace.Enqueue(new Tuple<int, int, double, double>(tile.Row, tile.Col, GetLeft(tile), GetTop(tile)));
                             Move(tile, es.Item1, es.Item2, es.Item3, es.Item4);
                         }
                     }
                 }
                 foreach (var es in emptySpace)
-                {
-                    var tile = CreateTile(es.Item1, es.Item2);
-                }
+                    CreateTile(es.Item1, es.Item2);
                 emptySpace.Clear();
             }
         }
 
+        private double GetLeft(Tile tile)
+        {
+            return tile.Col * (Canvas.ActualWidth / 8) + (Canvas.ActualWidth / 8) * 0.05;
+        }
+
+        private double GetTop(Tile tile)
+        {
+            return tile.Row * (Canvas.ActualHeight / 8) + (Canvas.ActualHeight / 8) * 0.05;
+        }
+
         private void Compute()
         {
+            State = GameState.ComputingResult;
             if (!Check())
             {
                 if (SelectedTile != null && SwapTile != null)
