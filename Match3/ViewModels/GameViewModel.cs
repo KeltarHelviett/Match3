@@ -188,6 +188,18 @@ namespace Match3.ViewModels
             tile.Move(left, top);
         }
 
+        public void Select(Tile tile)
+        {
+            SelectedTile = tile;
+            tile?.Select();
+        }
+
+        public void Deselect(Tile tile)
+        {
+            SelectedTile = null;
+            tile?.Deselect();
+        }
+
         private void TileClick(object sender, EventArgs args)
         {
             bool CanSwap(int x1, int x2, int y1, int y2) { return x1 == x2 && (y1 == y2 - 1 || y1 == y2 + 1); }
@@ -195,7 +207,7 @@ namespace Match3.ViewModels
             switch (State)
             {
                 case GameState.SelectingTileToSwap:
-                    SelectedTile = tile;
+                    Select(tile);
                     State = GameState.SelectingTileToSwapWith;
                     break;
                 case GameState.SelectingTileToSwapWith:
@@ -203,10 +215,17 @@ namespace Match3.ViewModels
                         || CanSwap(SelectedTile.Col, tile.Col, SelectedTile.Row, tile.Row))
                     {
                         SwapTile = tile;
+                        SelectedTile?.Deselect();
                         Swap(SelectedTile, SwapTile);
                         break;
                     }
                     State = GameState.SelectingTileToSwap;
+                    if (SelectedTile == tile)
+                    {
+                        Deselect(SelectedTile);
+                        break;
+                    }
+                    Deselect(SelectedTile);
                     TileClick(tile, args);
                     break;
             }
@@ -284,7 +303,7 @@ namespace Match3.ViewModels
             }
             else 
                 Fill();
-            SelectedTile = null;
+            Deselect(SelectedTile);
             SwapTile = null;
             State = GameState.SelectingTileToSwap;
         }

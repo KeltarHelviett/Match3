@@ -71,6 +71,18 @@ namespace Match3.Models
             BeginAnimation(OpacityProperty, anim);
         }
 
+        public void Select()
+        {
+            StrokeThickness = 5;
+            Stroke = Brushes.Navy;
+        }
+
+        public void Deselect()
+        {
+            StrokeThickness = 1;
+            Stroke = Brushes.Black;
+        }
+
         #endregion
 
         #region Event
