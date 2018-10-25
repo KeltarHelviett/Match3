@@ -14,13 +14,18 @@ namespace Match3.Views
         public GameView()
         {
             InitializeComponent();
-            Loaded += delegate
-            {
-                DataContext = new GameViewModel(MainCanvas);
-            };
+            MainCanvas.Loaded += (sender, args) => DataContext = new GameViewModel(MainCanvas);
         }
 
         #endregion
 
+        #region Private Methods
+
+        private void GameViewOnClosed(object sender, EventArgs e)
+        {
+            (DataContext as GameViewModel).Clear();
+        }
+
+        #endregion
     }
 }

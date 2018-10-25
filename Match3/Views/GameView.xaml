@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:Match3.Views"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         mc:Ignorable="d"
-        Title="Игровой экран" Height="800" Width="800">
+        Title="Игровой экран" Height="800" Width="800"
+        Closed="GameViewOnClosed">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
