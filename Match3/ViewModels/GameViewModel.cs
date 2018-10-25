@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Navigation;
 using System.Windows.Threading;
 using Match3.Annotations;
 using Match3.Models;
@@ -45,9 +46,8 @@ namespace Match3.ViewModels
                 Dispatcher.CurrentDispatcher
             );
             Timer.Tick += (sender, args) => TimeLeft -= 1;
-            Init();
             Timer.Start();
-            Compute();
+            Init();
         }
 
         #endregion
@@ -84,15 +84,20 @@ namespace Match3.ViewModels
 
         #region Public Properties
 
+        private object _lock = new object();
+
         public int AnimationCount
         {
             get => _animationCount;
             set
             {
-                _animationCount = value;
-                State = GameState.Animating;
-                if (_animationCount == 0)
-                    OnAnimationsCompleted();
+                lock (_lock)
+                {
+                    _animationCount = value;
+                    State = GameState.Animating;
+                    if (_animationCount == 0)
+                        OnAnimationsCompleted();
+                }
             }
         }
 
@@ -168,7 +173,8 @@ namespace Match3.ViewModels
             };
             Canvas.SetLeft(tile, GetLeft(tile));
             Canvas.SetTop(tile, -(8 - tile.Row) * (Canvas.ActualHeight / 8) - Canvas.ActualHeight / 8 * 0.05);
-            tile.MouseLeftButtonUp += TileClick;
+            //tile.MouseLeftButtonUp += TileClick;
+            tile.PreviewMouseLeftButtonUp += TileClick;
             Canvas.Children.Add(tile);
             Tiles[tile.Row, tile.Col] = tile;
             tile.Move(GetLeft(tile), GetTop(tile));
@@ -377,6 +383,15 @@ namespace Match3.ViewModels
                 SetToDelete(colToDelete);
             }
             return result;
+        }
+
+        #endregion
+
+        #region Public Methods
+
+        public void Clear()
+        {
+            Timer.Stop();
         }
 
         #endregion
