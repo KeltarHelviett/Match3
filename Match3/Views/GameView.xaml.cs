@@ -16,31 +16,9 @@ namespace Match3.Views
             InitializeComponent();
             Loaded += delegate
             {
-                var timer = new DispatcherTimer
-                (
-                    new TimeSpan(0, 0, 1),
-                    DispatcherPriority.DataBind,
-                    (sender, args) =>
-                    {
-                        //ScoreLabel.Content = (sender as DispatcherTimer).
-                    },
-                    Dispatcher.CurrentDispatcher
-                );
                 DataContext = new GameViewModel(MainCanvas);
             };
         }
-
-        #endregion
-
-        #region Private Fields
-
-        private int _timeLeft = 60;
-
-        #endregion
-
-        #region Public Properties
-
-        
 
         #endregion
 

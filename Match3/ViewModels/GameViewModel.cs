@@ -16,7 +16,7 @@ namespace Match3.ViewModels
 {
     enum GameState
     {
-        SelectingTileToSwap, SelectingTileToSwapWith, ComputingResult,
+        SelectingTileToSwap, SelectingTileToSwapWith, Animating, ComputingResult,
     }
 
     class GameViewModel: INotifyPropertyChanged
@@ -90,6 +90,7 @@ namespace Match3.ViewModels
             set
             {
                 _animationCount = value;
+                State = GameState.Animating;
                 if (_animationCount == 0)
                     OnAnimationsCompleted();
             }
@@ -216,6 +217,7 @@ namespace Match3.ViewModels
             tile?.Deselect();
         }
 
+        private bool first = false;
         private void TileClick(object sender, EventArgs args)
         {
             bool CanSwap(int x1, int x2, int y1, int y2) { return x1 == x2 && (y1 == y2 - 1 || y1 == y2 + 1); }
@@ -232,6 +234,7 @@ namespace Match3.ViewModels
                     {
                         SwapTile = tile;
                         SelectedTile?.Deselect();
+                        first = !first;
                         Swap(SelectedTile, SwapTile);
                         break;
                     }
